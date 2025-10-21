@@ -1,7 +1,7 @@
 pipeline {
   agent any
   tools {
-    nodejs "NodeJS_25"
+      nodejs "NodeJS_25"
   }
 
   stages {

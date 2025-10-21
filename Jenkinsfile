@@ -25,7 +25,20 @@ pipeline {
 
         stage('Run Playwright tests') {
             steps {
-                sh 'npx playwright test'
+                sh 'npx playwright test --reporter=html'
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'playwright-report/**', fingerprint: true
+                    publishHTML(target: [
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'playwright-report',
+                        reportFiles: 'index.html',
+                        reportName: 'Playwright Test Report'
+                    ])
+                }
             }
         }
     }

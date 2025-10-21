@@ -1,37 +1,38 @@
 pipeline {
-  agent any
-  tools {
-      nodejs "NodeJS_25"
-  }
-
-  stages {
-    stage('Checkout') {
-      steps {
-        git branch: 'main', url: 'https://github.com/bilalsh123/Playwright-CI-demo.git'
-      }
+    agent any
+    tools {
+        nodejs "NodeJS_25"
     }
 
-    stage('Install dependencies') {
-      steps {
-        sh '''
-          npm ci
-          npx playwright install --with-deps
-        '''
-      }
+    environment {
+        NPM_CACHE = "${WORKSPACE}/.npm"
     }
 
-    stage('Run Playwright tests') {
-      steps {
-        sh '''
-          npx playwright test --reporter=junit,line --output=test-results
-        '''
-      }
-      post {
-        always {
-          junit 'test-results/results.xml'
-          archiveArtifacts artifacts: 'test-results/**', fingerprint: true
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
         }
-      }
+
+        stage('Install dependencies') {
+            steps {
+                sh 'mkdir -p $NPM_CACHE'
+                sh 'npm ci --cache $NPM_CACHE'
+                sh 'npx playwright install --with-deps'
+            }
+        }
+
+        stage('Run Playwright tests') {
+            steps {
+                sh 'npx playwright test'
+            }
+        }
     }
-  }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'playwright-report/**', fingerprint: true
+        }
+    }
 }

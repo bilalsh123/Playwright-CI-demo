@@ -21,7 +21,7 @@ pipeline {
     stage('Run Playwright tests') {
       steps {
         dir('tests') {
-          sh 'npx playwright test --reporter=html'
+          sh 'npx playwright test --reporter=html --output=playwright-report'
         }
       }
     }
@@ -30,9 +30,9 @@ pipeline {
   post {
     always {
       publishHTML(target: [
-        reportDir: 'tests/playwright-report',
+        reportDir: 'playwright-report',
         reportFiles: 'index.html',
-        reportName: 'Playwright Test Report',
+        reportName: 'Playwright Test Tester Report',
         keepAll: true,
         alwaysLinkToLastBuild: true
       ])

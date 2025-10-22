@@ -22,7 +22,7 @@ pipeline {
                 sh 'npx playwright install --with-deps'
             }
         }
-
+// report test
         stage('Run Playwright tests') {
             steps {
                 sh 'npx playwright test --reporter=html'
@@ -36,7 +36,7 @@ pipeline {
                         keepAll: true,
                         reportDir: 'playwright-report',
                         reportFiles: 'index.html',
-                        reportName: 'Playwright Test Report'
+                        reportName: 'Playwright Test final Report'
                     ])
                 }
             }
